@@ -32,7 +32,7 @@ export default {
     filteredPokemon() {
       return this.pokemonList.filter(pokemon =>
         pokemon.name.toLowerCase().includes(this.search.toLowerCase())
-      );
+      ).slice(0, 60);
     },
   },
   async mounted() {
