@@ -36,11 +36,20 @@ export default {
     },
   },
   async mounted() {
-    try {
-      const response = await axios.get('https://pokeapi.co/api/v2/pokemon?limit=60');
+  try {
+    const limit = 60; 
+    let offset = 0;
+    let allPokemonFetched = false;
+
+    while (!allPokemonFetched) {
+      const response = await axios.get(`https://pokeapi.co/api/v2/pokemon?limit=${limit}&offset=${offset}`);
       const results = response.data.results;
 
-      // Fetch additional details for each Pokémon
+      if (results.length === 0) {
+        allPokemonFetched = true;
+        break;
+      }
+
       for (const result of results) {
         const pokemonResponse = await axios.get(result.url);
         const pokemonData = {
@@ -49,10 +58,14 @@ export default {
         };
         this.pokemonList.push(pokemonData);
       }
-    } catch (error) {
-      console.error(error);
+
+      offset += limit;
     }
-  },
+  } catch (error) {
+    console.error(error);
+  }
+},
+
 };
 </script>
 <style>
